@@ -15,24 +15,36 @@
       background-repeat: no-repeat;
       background-size: 100%;
     }
-    .c {
-      align-items: center;
-      display: flex;
-      justify-content: center;
-      height: 200px;
-    }
     .card{
       padding: 20px;
-      width: 25rem;
-
+      width: 90%;
+      height: 90%;
     }
     #map{
       float:right; 
       padding: 20px;
     }
+    @media(max-width: 767px){
+      #map{
+        float:center; 
+        padding: 20px;
+      }
+    }
 
+    svg{
+      width:  65%;
+      height : 65%;
+    }
+    #card{
+      display: flex; 
+      flex-direction: column; 
+      align-items: center;
+    }
+    .p-1{
+      width: 100%;
+    }
   </style>
-
+      
   <body>
     <nav class="navbar bg-light">
         <div class="container-fluid">
@@ -109,22 +121,23 @@
       
       
       
-      <svg id="map" viewbox="0 0 987 952" width="65%" height="65%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <image xlink:href="/img/metrof_r.png" x="0" y="0" height="100%" width="100%"></image>
+      <svg id="map" viewbox="0 0 987 952"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <image xlink:href="/img/metrof_r.png" x="0" y="0"></image>
         <g id="stations">
             
         </g>
       </svg>
 
-<div style="display: flex; flex-direction: column; align-items: center;">
+<div id="card" >
   <div class="card mt-4">
       <div class="mb-3">
-          <select class="p-1" style="max-width: 340px;" name="De" id="depart" >
+          <select class="p-1" name="De" id="depart" >
             <option value="">Choisissez votre station de départ</option>
           </select>
         </div>
+
         <div class="mb-3">
-          <select class="p-1" style="max-width: 340px;" name="Vers" id="arrivee">
+          <select class="p-1" name="Vers" id="arrivee">
             <option value="">Choisissez votre station d'arrivée </option>
           </select>
         </div>
