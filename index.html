@@ -24,12 +24,21 @@
       float:right; 
       padding: 20px;
     }
+
     @media(max-width: 767px){
-      #map{
-        float:center; 
-        padding: 20px;
+      nav{
+        background-color:black;
       }
-       a{
+      body{
+        background-image: none;
+      }
+      #map{
+        float: none;
+        padding: 20px;
+        height: 100%;
+        width: 100%;
+      }
+      #Log{
         display: none;
       }
     }
@@ -46,15 +55,18 @@
     .p-1{
       width: 100%;
     }
+    a{
+      text-align: center;
+    }
   </style>
       
   <body>
     <nav class="navbar bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="./img/logo/metro.png" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
+          <a class="navbar-brand" href="#" >
+            <img src="./img/logo/Mozz.png" alt="Logo" width="" height="60" class="d-inline-block align-text-top">
           </a>
-
+        <div id="Log">
           <a class="navbar-brand" href="#">
             <img src="./img/logo/M1.jpg" alt="Logo" width="35" height="35" class="d-inline-block align-text-top">
           </a>
@@ -91,7 +103,7 @@
             <img src="./img/logo/M7bis.jpg" alt="Logo" width="35" height="35" class="d-inline-block align-text-top">
           </a>
           
-          <a class="navbar-brand" onclick="popup()" href="#">
+          <a class="navbar-brand" href="#">
             <img src="./img/logo/M8.jpg" alt="Logo" width="35" height="35" class="d-inline-block align-text-top">
           </a>
           
@@ -119,6 +131,7 @@
             <img src="./img/logo/M14.jpg" alt="Logo" width="35" height="35" class="d-inline-block align-text-top">
           </a>
         </div>
+        </div>
       </nav>
 
       
@@ -130,6 +143,8 @@
             
         </g>
       </svg>
+
+    
 
 <div id="card" >
   <div class="card mt-4">
