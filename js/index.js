@@ -132,6 +132,10 @@ function ajouterText(text) {
 }
 
 async function getSum() {
+
+  const elementCharge = document.getElementById("chargement");
+  elementCharge.innerText = "CHARGEMENT...";
+
   const requete = await fetch("https://oussama.teroaz.me/acpm");
   const data = await requete.json();
   let sum = 0;
@@ -162,6 +166,8 @@ async function dessiner() {
     line.setAttributeNS(null,"y2", arrivee.y);
     line.setAttributeNS(null,"stroke", "black");
     line.setAttributeNS(null,"stroke-width", "3px");
+    const elementCharge = document.getElementById("chargement");
+    elementCharge.innerText = " ";
     element.append(circleDepart);
     element.append(line);
     element.append(circleArrivee);
@@ -219,3 +225,4 @@ async function findPos() {
     return `${posX};${posY};${nomStation}`;
   });
 }
+
