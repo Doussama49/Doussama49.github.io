@@ -134,7 +134,7 @@ function ajouterText(text) {
 async function getSum() {
 
   const elementCharge = document.getElementById("chargement");
-  elementCharge.innerText = "CHARGEMENT...";
+  elementCharge.innerText = "CHARGEMENT ACPM...";
 
   const requete = await fetch("https://oussama.teroaz.me/acpm");
   const data = await requete.json();
