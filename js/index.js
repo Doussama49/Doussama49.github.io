@@ -136,7 +136,6 @@ async function getSum() {
   const data = await requete.json();
   let sum = 0;
   data.map((value) => (sum += value[2]));
-  alert(sum);
   await dessiner();
 }
 
