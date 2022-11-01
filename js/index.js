@@ -219,4 +219,3 @@ async function findPos() {
     return `${posX};${posY};${nomStation}`;
   });
 }
-
