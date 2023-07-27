@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajout commande</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="icon" type="image/x-icon" href="static/img/favicon-32x32.png">
+</head>
+<body>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <div class="logo-container">
+          <img src="static/img/Valeo_Logo.png" alt="Logo">
+        </div>
+
+        <div id="verificationFormContainer">
+          <!-- Le formulaire de vérification -->
+          <form id="verificationForm">
+            <div class="mb-3">
+              <label for="identifiantInput" class="form-label">Identifiant (4 chiffres)</label>
+              <input type="text" class="form-control" id="identifiantInput" placeholder="Entrez l'identifiant de l'employé">
+              <div id="idValidationMessage" class="invalid-feedback">
+                Veuillez saisir un identifiant valide composé de 4 chiffres.
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">S'identifier</button>
+          </form>
+        </div>
+
+        <div id="resultContainer" style="display: none;">
+          <!-- Le conteneur pour afficher le résultat de la vérification (un autre formulaire ou un message d'erreur) -->
+        </div>
+
+        <div id="addCommandFormContainer" style="display: none;">
+          <!-- Le formulaire pour ajouter une commande -->
+          <form id="addCommandForm">
+            <div class="mb-3">
+              <label for="fournisseurSelect" class="form-label">Fournisseur</label>
+              <select class="form-select" id="fournisseurSelect">
+                <!-- La liste des fournisseurs sera ajoutée dynamiquement ici -->
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="dateCommandeInput" class="form-label">Date de commande</label>
+              <input type="date" class="form-control" id="dateCommandeInput">
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter la commande</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script>
+    const verificationFormContainer = document.getElementById('verificationFormContainer');
+    const resultContainer = document.getElementById('resultContainer');
+    const idInput = document.getElementById('identifiantInput');
+    const idValidationMessage = document.getElementById('idValidationMessage');
+
+    const addCommandFormContainer = document.getElementById('addCommandFormContainer');
+    const addCommandForm = document.getElementById('addCommandForm');
+    const fournisseurSelect = document.getElementById('fournisseurSelect');
+    const dateCommandeInput = document.getElementById('dateCommandeInput');
+    const test ='';
+
+    // Fonction pour récupérer la liste des fournisseurs depuis l'API
+    async function getFournisseurs() {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/fournisseurs', {
+        method: 'GET',
+      });
+
+      if (response.ok) {
+        const fournisseurs = await response.json();
+        // Remplir la liste déroulante avec les fournisseurs récupérés
+        fournisseurs.forEach(fournisseur => {
+          const option = document.createElement('option');
+          option.value = fournisseur[0]; // L'ID du fournisseur
+          option.text = fournisseur[1]; // Le nom du fournisseur
+          fournisseurSelect.appendChild(option);
+        });
+      } else {
+        console.error('Erreur lors de la récupération des fournisseurs.');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête :', error);
+    }
+  }
+
+    verificationForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const identifiant = idInput.value;
+      if (!/^\d{4}$/.test(identifiant)) {
+        // L'identifiant n'est pas composé de 4 chiffres, afficher le message d'erreur
+        idInput.classList.add('is-invalid');
+        idValidationMessage.style.display = 'block';
+        return;
+      }
+
+      idInput.classList.remove('is-invalid');
+      idValidationMessage.style.display = 'none';
+
+      try {
+        // Effectuer la requête HTTP à l'API locale pour vérifier l'employé
+        const response = await fetch(`http://127.0.0.1:5000/employes/${identifiant}`, {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          // L'employé existe, afficher le formulaire pour ajouter une commande
+          verificationFormContainer.style.display = 'none';
+          addCommandFormContainer.style.display = 'block';
+
+          // Récupérer la liste des fournisseurs pour remplir la liste déroulante
+          await getFournisseurs();
+        } else {
+          // L'employé n'existe pas, afficher un message d'erreur
+          resultContainer.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              Employé non trouvé. Veuillez réessayer avec un autre identifiant.
+            </div>
+          `;
+          resultContainer.style.display = 'block';
+        }
+      } catch (error) {
+        // Gérer les erreurs de requête
+        console.error('Erreur lors de la requête :', error);
+        resultContainer.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            Une erreur s'est produite. Veuillez réessayer ultérieurement.
+          </div>
+        `;
+        resultContainer.style.display = 'block';
+      }
+    });
+
+    addCommandForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const fournisseurId = fournisseurSelect.value;
+      const dateCommande = dateCommandeInput.value;
+      console.log(fournisseurId, idInput.value , dateCommande);
+      // Effectuer la requête HTTP POST à l'API locale pour ajouter une commande
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ajouter_commande', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ fournisseur_id: fournisseurId, employe_id:idInput.value ,date_commande: dateCommande })
+        });
+
+        if (response.ok) {
+          // La commande a été ajoutée avec succès
+          addCommandFormContainer.innerHTML = `
+            <div class="alert alert-success" role="alert">
+              Commande ajoutée avec succès !
+            </div>
+          `;
+        } else {
+          // Une erreur s'est produite lors de l'ajout de la commande
+          addCommandFormContainer.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              Une erreur s'est produite lors de l'ajout de la commande. Veuillez réessayer ultérieurement.
+            </div>
+          `;
+        }
+      } catch (error) {
+        // Gérer les erreurs de requête
+        console.error('Erreur lors de la requête :', error);
+        addCommandFormContainer.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            Une erreur s'est produite. Veuillez réessayer ultérieurement.
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
