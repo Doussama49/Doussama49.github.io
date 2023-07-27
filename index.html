@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajout commande</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="icon" type="image/x-icon" href="static/img/favicon-32x32.png">
+  <!-- Inclure la bibliothèque pdf-lib avec la dernière version -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@latest/dist/pdf-lib.js"></script>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <div class="logo-container">
+          <img src="static/img/Valeo_Logo.png" alt="Logo">
+        </div>
+
+        <div id="verificationFormContainer">
+          <!-- Le formulaire de vérification -->
+          <!-- Le formulaire de vérification -->
+          <form id="verificationForm">
+            <div class="mb-3">
+              <label for="identifiantInput" class="form-label">Identifiant (4 chiffres)</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="identifiantInput"
+                  placeholder="Entrez l'identifiant de l'agent">
+                <button type="button" class="btn btn-success" id="ajouterAgentBtn">+</button>
+              </div>
+              <div id="idValidationMessage" class="invalid-feedback">
+                Veuillez saisir un agent valide composé de 4 chiffres.
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">S'identifier</button>
+          </form>
+
+        </div>
+
+        <div id="resultContainer" style="display: none;">
+          <!-- Le conteneur pour afficher le résultat de la vérification (un autre formulaire ou un message d'erreur) -->
+        </div>
+
+        <div id="addCommandFormContainer" style="display: none;">
+          <!-- Le formulaire pour ajouter une commande -->
+          <form id="addCommandForm">
+            <div class="mb-3">
+              <label for="fournisseurSelect" class="form-label">Fournisseur</label>
+              <div class="input-group">
+                <select class="form-select" id="fournisseurSelect">
+                  <!-- La liste des fournisseurs sera ajoutée dynamiquement ici -->
+                </select>
+                <button type="button" class="btn btn-success" id="ajouterFournisseurBtn">+</button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="dateCommandeInput" class="form-label">Date de commande</label>
+              <input type="date" class="form-control" id="dateCommandeInput">
+            </div>
+            <div class="mb-3">
+              <label for="activiteSelect" class="form-label">Activité</label>
+              <select class="form-select" id="activiteSelect">
+                <option value="CDA">CDA</option>
+                <option value="THS">THS</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="bonLivraisonInput" class="form-label">Bon de livraison (BL)</label>
+              <input type="text" class="form-control" id="bonLivraisonInput"
+                placeholder="Entrez le numéro de bon de livraison">
+            </div>
+            <div class="mb-3">
+              <label for="materielInput" class="form-label">Matériel</label>
+              <input type="text" class="form-control" id="materielInput" placeholder="Entrez le matériel">
+            </div>
+            <div class="mb-3">
+              <label for="qteMaterielInput" class="form-label">Quantité du matériel reçu</label>
+              <input type="number" class="form-control" id="qteMaterielInput"
+                placeholder="Entrez la quantité du matériel reçu">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Statut</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="statutCheckbox">
+                <label class="form-check-label" for="statutCheckbox">OK</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="valeurInput" class="form-label">Valeur</label>
+              <input type="number" class="form-control" id="valeurInput" placeholder="Entrez la valeur">
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter la commande</button>
+          </form>
+        </div>
+
+        <div id="addFournisseurFormContainer" style="display: none;">
+          <!-- Le formulaire pour ajouter un fournisseur -->
+          <form id="addFournisseurForm">
+            <div class="mb-3">
+              <label for="nomFournisseurInput" class="form-label">Nom du fournisseur</label>
+              <input type="text" class="form-control" id="nomFournisseurInput"
+                placeholder="Entrez le nom du fournisseur">
+            </div>
+            <div class="mb-3">
+              <label for="adresseFournisseurInput" class="form-label">Adresse du fournisseur</label>
+              <input type="text" class="form-control" id="adresseFournisseurInput"
+                placeholder="Entrez l'adresse du fournisseur">
+            </div>
+            <div class="mb-3">
+              <label for="telephoneFournisseurInput" class="form-label">Téléphone du fournisseur</label>
+              <input type="text" class="form-control" id="telephoneFournisseurInput"
+                placeholder="Entrez le téléphone du fournisseur">
+            </div>
+            <div class="mb-3">
+              <label for="emailFournisseurInput" class="form-label">Email du fournisseur</label>
+              <input type="email" class="form-control" id="emailFournisseurInput"
+                placeholder="Entrez l'email du fournisseur">
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter le fournisseur</button>
+          </form>
+        </div>
+
+
+        <div id="addEmployeeFormContainer" style="display: none;">
+          <!-- Le formulaire pour ajouter un employé -->
+          <form id="addEmployeeForm">
+            <div class="mb-3">
+              <label for="nomEmployeeInput" class="form-label">Nom de l'employé</label>
+              <input type="text" class="form-control" id="nomEmployeeInput" placeholder="Entrez le nom de l'employé">
+            </div>
+            <div class="mb-3">
+              <label for="prenomEmployeeInput" class="form-label">Prénom de l'employé</label>
+              <input type="text" class="form-control" id="prenomEmployeeInput"
+                placeholder="Entrez le prénom de l'employé">
+            </div>
+            <div class="mb-3">
+              <label for="identifiantEmployeeInput" class="form-label">Identifiant de l'employé (4 chiffres)</label>
+              <input type="text" class="form-control" id="identifiantEmployeeInput"
+                placeholder="Entrez l'identifiant de l'employé">
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter l'employé</button>
+          </form>
+        </div>
+
+        
+      </br></br>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="afficherCommandes()">Afficher les commandes</button>
+        <div class="modal" id="commandesModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Liste des commandes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Le tableau des commandes sera ajouté dynamiquement ici -->
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script>
+    const verificationFormContainer = document.getElementById('verificationFormContainer');
+    const resultContainer = document.getElementById('resultContainer');
+    const idInput = document.getElementById('identifiantInput');
+    const idValidationMessage = document.getElementById('idValidationMessage');
+
+    const addCommandFormContainer = document.getElementById('addCommandFormContainer');
+    const addCommandForm = document.getElementById('addCommandForm');
+    const fournisseurSelect = document.getElementById('fournisseurSelect');
+    const dateCommandeInput = document.getElementById('dateCommandeInput');
+
+    const addFournisseurFormContainer = document.getElementById('addFournisseurFormContainer');
+    const addFournisseurForm = document.getElementById('addFournisseurForm');
+
+    const addEmployeeFormContainer = document.getElementById('addEmployeeFormContainer');
+    const addEmployeeForm = document.getElementById('addEmployeeForm');
+    const test = '';
+
+
+    // Fonction pour récupérer la liste des fournisseurs depuis l'API
+    async function getFournisseurs() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/fournisseurs', {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          const fournisseurs = await response.json();
+          // Remplir la liste déroulante avec les fournisseurs récupérés
+          fournisseurs.forEach(fournisseur => {
+            const option = document.createElement('option');
+            option.value = fournisseur[0]; // L'ID du fournisseur
+            option.text = fournisseur[1]; // Le nom du fournisseur
+            fournisseurSelect.appendChild(option);
+          });
+        } else {
+          console.error('Erreur lors de la récupération des fournisseurs.');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la requête :', error);
+      }
+    }
+
+    verificationForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const identifiant = idInput.value;
+      if (!/^\d{4}$/.test(identifiant)) {
+        // L'identifiant n'est pas composé de 4 chiffres, afficher le message d'erreur
+        idInput.classList.add('is-invalid');
+        idValidationMessage.style.display = 'block';
+        return;
+      }
+
+      idInput.classList.remove('is-invalid');
+      idValidationMessage.style.display = 'none';
+
+      try {
+        // Effectuer la requête HTTP à l'API locale pour vérifier l'employé
+        const response = await fetch(`http://127.0.0.1:5000/employes/${identifiant}`, {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          // L'employé existe, afficher le formulaire pour ajouter une commande
+          verificationFormContainer.style.display = 'none';
+          addCommandFormContainer.style.display = 'block';
+
+          // Récupérer la liste des fournisseurs pour remplir la liste déroulante
+          await getFournisseurs();
+        } else {
+          // L'employé n'existe pas, afficher un message d'erreur
+          resultContainer.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              Employé non trouvé. Veuillez réessayer avec un autre identifiant.
+            </div>
+          `;
+          resultContainer.style.display = 'block';
+        }
+      } catch (error) {
+        // Gérer les erreurs de requête
+        console.error('Erreur lors de la requête :', error);
+        resultContainer.innerHTML = `
+          <div class="alert alert-danger" role="alert">
+            Une erreur s'est produite. Veuillez réessayer ultérieurement.
+          </div>
+        `;
+        resultContainer.style.display = 'block';
+      }
+    });
+
+    addCommandForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const fournisseurId = fournisseurSelect.value;
+      const dateCommande = dateCommandeInput.value;
+      const activite = activiteSelect.value;
+      const bonLivraison = bonLivraisonInput.value;
+      const materiel = materielInput.value;
+      const qteMateriel = qteMaterielInput.value;
+      const statut = document.getElementById('statutCheckbox').checked ? 'OK' : 'NOK'; // Vérifie si la checkbox est cochée
+      const valeur = valeurInput.value;
+
+      // Effectuer la requête HTTP POST à l'API locale pour ajouter une commande
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ajouter_commande', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fournisseur_id: fournisseurId,
+            employe_id: idInput.value,
+            date_commande: dateCommande,
+            activite: activite,
+            bonLivraison: bonLivraison,
+            materiel: materiel,
+            qteMateriel: qteMateriel,
+            statut: statut, // Utilisation du statut récupéré de la checkbox
+            valeur: valeur
+          })
+        });
+
+        if (response.ok) {
+          // La commande a été ajoutée avec succès
+          addCommandFormContainer.innerHTML = `
+        <div class="alert alert-success" role="alert">
+          Commande ajoutée avec succès !
+        </div>
+      `;
+        } else {
+          // Une erreur s'est produite lors de l'ajout de la commande
+          addCommandFormContainer.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+          Une erreur s'est produite lors de l'ajout de la commande. Veuillez réessayer ultérieurement.
+        </div>
+      `;
+        }
+      } catch (error) {
+        // Gérer les erreurs de requête
+        console.error('Erreur lors de la requête :', error);
+        addCommandFormContainer.innerHTML = `
+      <div class="alert alert-danger" role="alert">
+        Une erreur s'est produite. Veuillez réessayer ultérieurement.
+      </div>
+    `;
+      }
+    });
+
+    async function afficherCommandes() {
+    try {
+      // Appeler l'endpoint qui récupère toutes les commandes depuis le serveur
+      const response = await fetch('http://127.0.0.1:5000/commandes');
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des commandes.');
+      }
+      const commandes = await response.json();
+
+      // Générer le contenu du tableau avec les données des commandes
+      let tableContent = `<table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Fournisseur</th>
+                                <th>Employé</th>
+                                <th>Date de commande</th>
+                                <th>Activité</th>
+                                <th>Bon de livraison</th>
+                                <th>Matériel</th>
+                                <th>Quantité de matériel</th>
+                                <th>Statut</th>
+                                <th>Valeur</th>
+                              </tr>
+                            </thead>
+                            <tbody>`;
+
+      for (const commande of commandes) {
+        // Appeler l'API pour récupérer les informations du fournisseur par ID
+        const fournisseurResponse = await fetch(`http://127.0.0.1:5000/fournisseurs/${commande[1]}`);
+        const fournisseurData = await fournisseurResponse.json();
+        const fournisseurNom = fournisseurData.nom; // Remplacer "nom" par le nom de votre champ dans les données du fournisseur
+
+        // Appeler l'API pour récupérer les informations de l'employé par ID
+        const employeResponse = await fetch(`http://127.0.0.1:5000/employes/${commande[2]}`);
+        const employeData = await employeResponse.json();
+        const employeNom = employeData.nom; // Remplacer "nom" par le nom de votre champ dans les données de l'employé
+
+        tableContent += `<tr>
+                          <td>${commande[0]}</td>
+                          <td>${fournisseurNom}</td>
+                          <td>${employeNom}</td>
+                          <td>${commande[3]}</td>
+                          <td>${commande[4]}</td>
+                          <td>${commande[5] || ''}</td>
+                          <td>${commande[6] || ''}</td>
+                          <td>${commande[7] || ''}</td>
+                          <td>${commande[8]}</td>
+                          <td>${commande[9] || ''}</td>
+                        </tr>`;
+      }
+
+      tableContent += `</tbody></table>`;
+
+      // Mettre le contenu du tableau dans la boîte de dialogue modale
+      const modalBody = document.querySelector('.modal-body');
+      modalBody.innerHTML = tableContent;
+
+      // Ouvrir la boîte de dialogue modale
+      const commandesModal = new bootstrap.Modal(document.getElementById('commandesModal'));
+      commandesModal.show();
+
+    } catch (error) {
+      console.error('Erreur lors de la récupération des commandes :', error);
+    }
+  }
+  </script>
+
+
+
+
+</body>
+
+</html>
